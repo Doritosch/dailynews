@@ -6,29 +6,45 @@ import com.minsu.dnews.subscriber.dto.SubscriberRequest;
 import com.minsu.dnews.subscriber.dto.SubscriberResponse;
 import com.minsu.dnews.subscriber.dto.SubscriberSearchRequest;
 import com.minsu.dnews.subscriber.infra.SubscriberJpaRepository;
+import com.minsu.dnews.theme.domain.SubscribeTheme;
+import com.minsu.dnews.theme.domain.Theme;
+import com.minsu.dnews.theme.infra.ThemeJpaRepository;
+import com.minsu.dnews.theme.service.SubThemeService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SubscriberServiceImpl implements SubscriberService {
     private final SubscriberJpaRepository subscriberJpaRepository;
-
+    private final ThemeJpaRepository themeJpaRepository;
+    private final SubThemeService subThemeService;
     @Autowired
-    public SubscriberServiceImpl(SubscriberJpaRepository subscriberJpaRepository) {
+    public SubscriberServiceImpl(
+            SubscriberJpaRepository subscriberJpaRepository,
+            ThemeJpaRepository themeJpaRepository,
+            SubThemeService subThemeService
+    ) {
         this.subscriberJpaRepository = subscriberJpaRepository;
+        this.themeJpaRepository = themeJpaRepository;
+        this.subThemeService = subThemeService;
     }
 
 
     @Transactional
     @Override
-    public SubscriberResponse subscribe(SubscriberRequest subscriber) {
-        if (subscriberJpaRepository.findByEmail(subscriber.email()) != null) {
+    public SubscriberResponse subscribe(SubscriberRequest request) {
+        if (subscriberJpaRepository.findByEmail(request.email()) != null) {
             throw new IllegalStateException("이미 구독한 이메일입니다.");
         }
 
-        Subscriber subscriberEntity = subscriber.toEntity();
+        Subscriber subscriberEntity = request.toEntity();
         Subscriber saveEntity = subscriberJpaRepository.save(subscriberEntity);
+
+        subThemeService.makeSubTheme(request.themeList(), saveEntity);
+
         return SubscriberResponse.from(saveEntity);
     }
 

@@ -1,14 +1,12 @@
 package com.minsu.dnews.subscriber.service;
 
 import com.minsu.dnews.subscriber.domain.Subscriber;
-import com.minsu.dnews.subscriber.domain.SubscriberStatus;
 import com.minsu.dnews.subscriber.dto.SubscriberRequest;
 import com.minsu.dnews.subscriber.dto.SubscriberResponse;
 import com.minsu.dnews.subscriber.dto.SubscriberSearchRequest;
 import com.minsu.dnews.subscriber.infra.SubscriberJpaRepository;
-import jakarta.persistence.EntityManager;
+import com.minsu.dnews.theme.infra.ThemeJpaRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +17,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +31,8 @@ class SubscriberServiceImplTest {
 
     @Mock
     SubscriberJpaRepository subscriberJpaRepository;
+    @Mock
+    ThemeJpaRepository themeJpaRepository;
     @InjectMocks
     SubscriberServiceImpl subscriberService;
 
@@ -39,7 +40,7 @@ class SubscriberServiceImplTest {
     @DisplayName("구독자 생성")
     void subscribeTest() {
         //given
-        SubscriberRequest subscriberRequest = new SubscriberRequest("test@naver.com", LocalDateTime.now());
+        SubscriberRequest subscriberRequest = new SubscriberRequest("test@naver.com", LocalDateTime.now(), new ArrayList<>());
         Subscriber subscriber = new Subscriber("test@naver.com", subscriberRequest.sendTime());
 
         //when
