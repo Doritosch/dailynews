@@ -1,5 +1,6 @@
 package com.minsu.dnews.theme.domain;
 
+import com.minsu.dnews.news.domain.News;
 import com.minsu.dnews.subscriber.domain.Subscriber;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,4 +24,7 @@ public class Theme {
     public Theme(String name) {
         this.name = name;
     }
+
+    @OneToMany(mappedBy = "theme")
+    private List<News> newsList = new ArrayList<>();
 }

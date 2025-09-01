@@ -1,5 +1,8 @@
 package com.minsu.dnews.api;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -9,15 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.nio.file.Paths.get;
-
+@Component
 public class NaverNewsApi {
-    public static void main(String[] args) {
-        String clientId = "szlqWO_rN9qmW9x2m6NK";
-        String clientSecret = "IwllfyIum3";
 
+    @Value("${naver.clientId}")
+    private static String clientId;
+    @Value("${naver.clientSecret}")
+    private static String clientSecret;
+    public static String getNews(String theme) {
         String text = null;
         try {
-            text = URLEncoder.encode("경제", "UTF-8");
+            text = URLEncoder.encode(theme, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("검색어 인코딩 실패",e);
         }
@@ -46,7 +51,7 @@ public class NaverNewsApi {
         String responseBody = get(apiURL,requestHeaders);
 
 
-        System.out.println(responseBody);
+        return responseBody;
     }
     private static String get(String apiUrl, Map<String, String> requestHeaders){
         HttpURLConnection con = connect(apiUrl);

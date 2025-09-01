@@ -6,6 +6,7 @@ import com.minsu.dnews.subscriber.dto.SubscriberResponse;
 import com.minsu.dnews.subscriber.dto.SubscriberSearchRequest;
 import com.minsu.dnews.subscriber.infra.SubscriberJpaRepository;
 import com.minsu.dnews.theme.infra.ThemeJpaRepository;
+import com.minsu.dnews.theme.service.SubThemeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,8 @@ class SubscriberServiceImplTest {
     SubscriberJpaRepository subscriberJpaRepository;
     @Mock
     ThemeJpaRepository themeJpaRepository;
+    @Mock
+    SubThemeService subThemeService;
     @InjectMocks
     SubscriberServiceImpl subscriberService;
 
