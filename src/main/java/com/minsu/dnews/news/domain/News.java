@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 public class News {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COLUMN_ID")
+    @Column(name = "NEWS_ID")
     private Long id;
 
     @Column(nullable = false)

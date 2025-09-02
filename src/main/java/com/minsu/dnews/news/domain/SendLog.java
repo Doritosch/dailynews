@@ -11,14 +11,13 @@ public class SendLog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "COLUMN_ID")
+    @JoinColumn(name = "NEWS_ID")
     private News news;
 
     @ManyToOne
     @JoinColumn(name = "SUBSCRIBER_ID")
     private Subscriber subscriber;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime sendAt;
 
     public void addNews(News news) {

@@ -26,7 +26,6 @@ import java.util.Locale;
 public class NewsServiceImpl implements NewsService {
 
     private final NaverNewsApi naverNewsApi;
-//    private final OpenAiApi openAiApi;
     private final NewsJpaRepository newsJpaRepository;
     private final ThemeJpaRepository themeJpaRepository;
 

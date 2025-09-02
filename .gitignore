@@ -1,0 +1,5 @@
+# application config
+src/main/resources/application.yml
+
+# build output
+out/
