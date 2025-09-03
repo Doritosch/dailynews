@@ -2,6 +2,7 @@ package com.minsu.dnews.subscriber.service;
 
 import com.minsu.dnews.subscriber.domain.Subscriber;
 import com.minsu.dnews.subscriber.domain.SubscriberStatus;
+import com.minsu.dnews.subscriber.dto.SubscriberEmailThemes;
 import com.minsu.dnews.subscriber.dto.SubscriberRequest;
 import com.minsu.dnews.subscriber.dto.SubscriberResponse;
 import com.minsu.dnews.subscriber.dto.SubscriberSearchRequest;
@@ -57,6 +58,13 @@ public class SubscriberServiceImpl implements SubscriberService {
         }
 
         return SubscriberResponse.from(subscriber);
+    }
+    public List<SubscriberEmailThemes> getEmailAndSubThemes() {
+        return subscriberJpaRepository.findAll().stream()
+                .map(sub -> new SubscriberEmailThemes(sub.getEmail(), sub.getSubscribeThemeList().stream()
+                        .map(st -> st.getTheme().getName())
+                                .toList()))
+                .toList();
     }
     @Transactional
     @Override

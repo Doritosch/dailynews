@@ -1,8 +1,6 @@
 package com.minsu.dnews.news.dto;
 
-import java.time.LocalDateTime;
-
-public record NewsItem(
+public record NewsItemDto(
         String theme,
         String title,
         String originallink,

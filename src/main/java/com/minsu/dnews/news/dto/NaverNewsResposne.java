@@ -7,6 +7,6 @@ public record NaverNewsResposne(
         int total,
         int start,
         int display,
-        List<NewsItem> items
+        List<NewsItemDto> items
 ) {
 }

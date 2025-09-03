@@ -1,5 +1,8 @@
 # application config
 src/main/resources/application.yml
 
+# application-test config
+src/test/resources/application-test.yml
+
 # build output
 out/

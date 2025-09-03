@@ -1,10 +1,32 @@
 spring:
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: als000825@naver.com
+    password: alstn00
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+
+
+  application:
+    name: dnews
+
   datasource:
-    username: sa
     url: jdbc:h2:tcp://localhost/~/dnews
+    username: sa
     password:
     driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate.ddl-auto: create
+    show-sql: true
+
+naver:
+  clientId: szlqWO_rN9qmW9x2m6NK
+  clientSecret: IwllfyIum3
+
