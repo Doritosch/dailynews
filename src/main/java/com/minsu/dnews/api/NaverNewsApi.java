@@ -1,5 +1,6 @@
 package com.minsu.dnews.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,14 @@ import java.util.Map;
 
 import static java.nio.file.Paths.get;
 @Component
+@Slf4j
 public class NaverNewsApi {
 
     @Value("${naver.clientId}")
-    private static String clientId;
+    private String clientId;
     @Value("${naver.clientSecret}")
-    private static String clientSecret;
-    public static String getNews(String theme) {
+    private String clientSecret;
+    public String getNews(String theme) {
         String text = null;
         try {
             text = URLEncoder.encode(theme, "UTF-8");
@@ -50,10 +52,10 @@ public class NaverNewsApi {
         requestHeaders.put("X-Naver-Client-Secret", clientSecret);
         String responseBody = get(apiURL,requestHeaders);
 
-
+        log.info(responseBody);
         return responseBody;
     }
-    private static String get(String apiUrl, Map<String, String> requestHeaders){
+    private String get(String apiUrl, Map<String, String> requestHeaders){
         HttpURLConnection con = connect(apiUrl);
         try {
             con.setRequestMethod("GET");

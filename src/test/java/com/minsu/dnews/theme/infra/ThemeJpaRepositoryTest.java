@@ -18,19 +18,13 @@ class ThemeJpaRepositoryTest {
     @Autowired
     private ThemeJpaRepository themeJpaRepository;
     private Theme theme;
-    @BeforeEach
-    void setUp() {
-        theme = Theme.builder()
-                .name("게임")
-                .build();
-    }
 
     @Test
     @DisplayName("Theme 저장 테스트")
     void createTheme() {
         //given
         theme = Theme.builder()
-                .name("주식")
+                .name("레이싱")
                 .build();
         //when
         Theme savedTheme = themeJpaRepository.save(theme);

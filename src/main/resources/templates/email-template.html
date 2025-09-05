@@ -11,11 +11,11 @@
 <br/>
 
 <!-- 테마별 뉴스 -->
-<div th:each="entry : ${themeNewsMap}">
-    <h2 th:text="${entry.key} + ' 뉴스'"></h2>
+<div th:each="themeName, newsList : ${themeNewsMap}">
+    <h2 th:text="${themeName} + ' 뉴스'"></h2>
 
     <ul>
-        <li th:each="news : ${entry.value}">
+        <li th:each="news : ${newsList}">
             <a th:href="${news.originallink}" th:text="${news.title}"></a><br/>
             <small th:text="${news.pubDate}"></small><br/>
             <p th:text="${news.description}"></p>

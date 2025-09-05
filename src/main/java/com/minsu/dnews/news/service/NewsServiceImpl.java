@@ -16,6 +16,7 @@ import com.minsu.dnews.theme.domain.Theme;
 import com.minsu.dnews.theme.infra.ThemeJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,10 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class NewsServiceImpl implements NewsService {
 
@@ -38,6 +41,11 @@ public class NewsServiceImpl implements NewsService {
     // 테마별 뉴스 저장 및 NewsItemDto 리스트 반환
     public Map<String, List<NewsItemDto>> updateNews() throws JsonProcessingException {
         List<Theme> themes = themeJpaRepository.findAll();
+        log.info("테마는 " +
+                themes.stream()
+                        .map(Theme::getName)
+                        .collect(Collectors.joining(", "))
+                + "가 존재합니다.");
         Map<String, List<NewsItemDto>> themeNewsMap = new HashMap<>();
         List<NewsItemDto> newsItems = new ArrayList<>();
 
@@ -61,7 +69,7 @@ public class NewsServiceImpl implements NewsService {
     }
     @Transactional
     public List<News> fetchAndSaveNews(Theme theme) {
-        List<News> newsList = new ArrayList<>();
+//        List<News> newsList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -70,50 +78,71 @@ public class NewsServiceImpl implements NewsService {
             objectMapper.registerModule(new JavaTimeModule());
             NaverNewsResposne naverNewsResposne =
                     objectMapper.readValue(responseBody, NaverNewsResposne.class);
-
-            naverNewsResposne.items().forEach(item -> {
-                News news = News.builder()
-                        .theme(theme)
-                        .title(item.title())
-                        .originallink(item.originallink())
-                        .description(item.description())
-                        .pubDate(convertPubDate(item.pubDate()))
-                        .build();
-                newsJpaRepository.save(news);
-                newsList.add(news);
-            });
+            log.info("object 역직렬화");
+            List<News> newsList = naverNewsResposne.items().stream()
+                    .map(item -> News.builder()
+                            .theme(theme)
+                            .title(item.title())
+                            .originallink(item.originallink())
+                            .description(item.description())
+                            .pubDate(convertPubDate(item.pubDate()))
+                            .build())
+                    .toList();
+            log.info("객체 list화 완료");
+            newsJpaRepository.saveAll(newsList);
+            log.info("뉴스 저장 완료");
+            return newsList;
+//            naverNewsResposne.items().forEach(item -> {
+//                News news = News.builder()
+//                        .theme(theme)
+//                        .title(item.title())
+//                        .originallink(item.originallink())
+//                        .description(item.description())
+//                        .pubDate(convertPubDate(item.pubDate()))
+//                        .build();
+//                newsJpaRepository.save(news);
+//                newsList.add(news);
+//            });
         } catch (Exception e) {
             throw new IllegalStateException("뉴스 데이터를 불러오고 저장하는 데 실패했습니다.");
-        } finally {
-            objectMapper.clearCaches();
-            return newsList;
         }
     }
     private LocalDateTime convertPubDate(String pubDate) {
         // 예: "Mon, 01 Sep 2025"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy", Locale.ENGLISH);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
         return ZonedDateTime.parse(pubDate, formatter).toLocalDateTime();
     }
     @Scheduled(cron = "0 0 7 * *")
-    private void sendMailToSubscribers() throws JsonProcessingException {
+    public void sendMailToSubscribers() throws JsonProcessingException {
         Map<String, List<NewsItemDto>> themeNewsMap = updateNews();// 뉴스 갱신 및 db 저장
 
         // 모든 구독자 정보에서 email, subThemeList 추출
-        List<SubscriberEmailThemes> subInfo = subscriberService.getEmailAndSubThemes();
-
-        // 당일 기준 모든 뉴스 저장. data format -> map(theme, mop<News>)
+        Map<String, List<String>> subInfo = subscriberService.getEmailAndSubThemesFromSubscriber();
+        log.info("구독자 정보 가져오기 완료");
+        // 당일 기준 모든 뉴스 저장. data format -> map(theme, List<NewsItemDto>)
         //그리고 각 유저가 선택한 테마들 가져와서 list에 뉴스 3개씩 저장
-        for(SubscriberEmailThemes sub : subInfo) {
+        for(String sub : subInfo.keySet()) {
+            log.info(sub + "님에게 전송을 시작합니다.");
             Map<String, List<NewsItemDto>> personalNews = new HashMap<>();
-            for(String theme : sub.subThemes()) {
+            for(String theme : subInfo.get(sub)) {
                 List<NewsItemDto> newsItemDtos = themeNewsMap.get(theme);
-                Collections.shuffle(newsItemDtos);
-                List<NewsItemDto> sendNewsDtoList = newsItemDtos.subList(0, 3);
-                personalNews.put(theme, sendNewsDtoList);
-            }
 
-            mailSendService.sendHtmlEmail(sub.email(), personalNews);
+                personalNews.put(theme, getRandomNews(newsItemDtos));
+            }
+            log.info(personalNews.size() + " " + personalNews.keySet());
+            mailSendService.sendHtmlEmail(sub, personalNews);
         }
     }
+    private List<NewsItemDto> getRandomNews(List<NewsItemDto> newsList) {
+        if (newsList == null || newsList.isEmpty()) {
+            throw new IllegalStateException("뉴스가 없습니다.");
+        }
 
+        int size = Math.min(3, newsList.size());
+        return new Random().ints(0, newsList.size())
+                .distinct()
+                .limit(size)
+                .mapToObj(newsList::get)
+                .collect(Collectors.toList());
+    }
 }

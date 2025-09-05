@@ -5,6 +5,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-    <p>님, 안녕하세요!</p>
+<div>
+    <p text="안녕하세요!'"></p>
+</div>
+<br/>
+
+<!-- 테마별 뉴스 -->
+<div th:each="entry : ${themeNewsMap}">
+    <h2 th:text="${entry.key} + ' 뉴스'"></h2>
+
+    <ul>
+        <li th:each="news : ${entry.value}">
+            <a th:href="${news.originallink}" th:text="${news.title}"></a><br/>
+            <small th:text="${news.pubDate}"></small><br/>
+            <p th:text="${news.description}"></p>
+            <hr/>
+        </li>
+    </ul>
+</div>
+
 </body>
 </html>

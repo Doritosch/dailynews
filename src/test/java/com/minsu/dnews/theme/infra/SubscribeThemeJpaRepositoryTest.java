@@ -27,12 +27,6 @@ class SubscribeThemeJpaRepositoryTest {
     private ThemeJpaRepository themeJpaRepository;
     @Autowired
     private SubscribeThemeJpaRepository subscribeThemeJpaRepository;
-    @BeforeEach
-    void setUp() {
-        themeJpaRepository.save(new Theme("주식"));
-        themeJpaRepository.save(new Theme("게임"));
-        themeJpaRepository.save(new Theme("정치"));
-    }
     @Test
     void saveTest() {
         //given
@@ -53,6 +47,6 @@ class SubscribeThemeJpaRepositoryTest {
         }
 
         //then
-        assertEquals(subscribeThemeJpaRepository.findAll().size(), 3);
+        assertEquals(subscribeThemeJpaRepository.findAll().size(), 5);
     }
 }

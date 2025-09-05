@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface NewsService {
     List<News> fetchAndSaveNews(Theme theme) throws JsonProcessingException;
+    void sendMailToSubscribers() throws JsonProcessingException;
 }

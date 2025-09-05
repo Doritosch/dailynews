@@ -23,7 +23,7 @@ public class Subscriber {
     private Long id;
     @Column(nullable = false)
     private String email;
-    @Temporal(TemporalType.TIMESTAMP)
+
     private LocalDateTime sendTime;
     @Enumerated(EnumType.STRING)
     private SubscriberStatus status;

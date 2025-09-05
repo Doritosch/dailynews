@@ -7,11 +7,12 @@ import com.minsu.dnews.subscriber.dto.SubscriberResponse;
 import com.minsu.dnews.subscriber.dto.SubscriberSearchRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SubscriberService {
     SubscriberResponse subscribe(SubscriberRequest subscriber);
     SubscriberResponse searchEmail(SubscriberSearchRequest searchRequest);
     void unsubscribe(String email);
 
-    List<SubscriberEmailThemes> getEmailAndSubThemes();
+    Map<String, List<String>> getEmailAndSubThemesFromSubscriber();
 }

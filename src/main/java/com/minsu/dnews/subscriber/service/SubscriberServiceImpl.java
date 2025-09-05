@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SubscriberServiceImpl implements SubscriberService {
@@ -59,12 +61,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 
         return SubscriberResponse.from(subscriber);
     }
-    public List<SubscriberEmailThemes> getEmailAndSubThemes() {
-        return subscriberJpaRepository.findAll().stream()
-                .map(sub -> new SubscriberEmailThemes(sub.getEmail(), sub.getSubscribeThemeList().stream()
-                        .map(st -> st.getTheme().getName())
-                                .toList()))
-                .toList();
+    public Map<String, List<String>> getEmailAndSubThemesFromSubscriber() {
+        return subscriberJpaRepository.findSubscribersEmailAndTheme().stream()
+                .collect(Collectors.groupingBy(
+                        row -> (String) row[0],
+                        Collectors.mapping(row -> (String) row[1], Collectors.toList())
+                ));
     }
     @Transactional
     @Override
