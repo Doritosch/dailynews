@@ -29,23 +29,7 @@ public class NaverNewsApi {
             throw new RuntimeException("검색어 인코딩 실패",e);
         }
 
-        String apiURL = "https://openapi.naver.com/v1/search/news.json?query=" + text
-                + "&display=10"
-                + "&photo=0"
-                + "&field=0"
-                + "&pd=4"
-                + "&ds="
-                + "&de="
-                + "&docid="
-                + "&related=0"
-                + "&mynews=1"
-                + "&office_type=3"
-                + "&office_section_code=0"
-                + "&news_office_checked="
-                + "&nso=so%3Ar%2Cp%3A1d"
-                + "&is_sug_officeid=0"
-                + "&office_category=3"
-                + "&service_area=0";    // JSON 결과
+        String apiURL = "https://openapi.naver.com/v1/search/news.json?query=" + text;
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);

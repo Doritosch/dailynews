@@ -72,7 +72,6 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void unsubscribe(String email) {
         Subscriber subscriber = subscriberJpaRepository.findByEmail(email);
-
         subscriber.unsubService();
     }
 }

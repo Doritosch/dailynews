@@ -39,7 +39,7 @@ public class NewsServiceImpl implements NewsService {
     private final MailSendService mailSendService;
 
     // 테마별 뉴스 저장 및 NewsItemDto 리스트 반환
-    public Map<String, List<NewsItemDto>> updateNews() throws JsonProcessingException {
+    public Map<String, List<NewsItemDto>> updateNews() {
         List<Theme> themes = themeJpaRepository.findAll();
         log.info("테마는 " +
                 themes.stream()
@@ -92,17 +92,6 @@ public class NewsServiceImpl implements NewsService {
             newsJpaRepository.saveAll(newsList);
             log.info("뉴스 저장 완료");
             return newsList;
-//            naverNewsResposne.items().forEach(item -> {
-//                News news = News.builder()
-//                        .theme(theme)
-//                        .title(item.title())
-//                        .originallink(item.originallink())
-//                        .description(item.description())
-//                        .pubDate(convertPubDate(item.pubDate()))
-//                        .build();
-//                newsJpaRepository.save(news);
-//                newsList.add(news);
-//            });
         } catch (Exception e) {
             throw new IllegalStateException("뉴스 데이터를 불러오고 저장하는 데 실패했습니다.");
         }
@@ -112,15 +101,14 @@ public class NewsServiceImpl implements NewsService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
         return ZonedDateTime.parse(pubDate, formatter).toLocalDateTime();
     }
-    @Scheduled(cron = "0 0 7 * *")
-    public void sendMailToSubscribers() throws JsonProcessingException {
-        Map<String, List<NewsItemDto>> themeNewsMap = updateNews();// 뉴스 갱신 및 db 저장
+    public void sendMailToSubscribers() {
+        Map<String, List<NewsItemDto>> themeNewsMap = updateNews(); // 뉴스 갱신 및 db 저장
 
         // 모든 구독자 정보에서 email, subThemeList 추출
         Map<String, List<String>> subInfo = subscriberService.getEmailAndSubThemesFromSubscriber();
         log.info("구독자 정보 가져오기 완료");
         // 당일 기준 모든 뉴스 저장. data format -> map(theme, List<NewsItemDto>)
-        //그리고 각 유저가 선택한 테마들 가져와서 list에 뉴스 3개씩 저장
+        // 그리고 각 유저가 선택한 테마들 가져와서 list에 뉴스 3개씩 저장
         for(String sub : subInfo.keySet()) {
             log.info(sub + "님에게 전송을 시작합니다.");
             Map<String, List<NewsItemDto>> personalNews = new HashMap<>();

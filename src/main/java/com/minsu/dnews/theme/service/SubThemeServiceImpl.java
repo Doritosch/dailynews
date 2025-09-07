@@ -35,6 +35,7 @@ public class SubThemeServiceImpl implements SubThemeService {
 
         return subscribeThemes;
     }
+
     @Override
     public void removeSubTheme(List<String> themeList, Subscriber subscriber) {
         for(String name : themeList) {

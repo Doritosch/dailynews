@@ -8,14 +8,12 @@ import java.util.List;
 
 public record SubscriberRequest(
         String email,
-        LocalDateTime sendTime,
         List<String> themeList
 ) {
 
     public Subscriber toEntity() {
         return new Subscriber(
-                email,
-                sendTime
+                email
         );
     }
 }

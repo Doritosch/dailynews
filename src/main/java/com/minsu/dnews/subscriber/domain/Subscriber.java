@@ -24,7 +24,6 @@ public class Subscriber {
     @Column(nullable = false)
     private String email;
 
-    private LocalDateTime sendTime;
     @Enumerated(EnumType.STRING)
     private SubscriberStatus status;
 
@@ -34,9 +33,8 @@ public class Subscriber {
     @OneToMany(mappedBy = "subscriber")
     private List<SendLog> sendLogs = new ArrayList<>();
 
-    public Subscriber(String email, LocalDateTime sendTime) {
+    public Subscriber(String email) {
         this.email = email;
-        this.sendTime = sendTime;
         this.status = SubscriberStatus.SUBSCRIBE;
     }
 
