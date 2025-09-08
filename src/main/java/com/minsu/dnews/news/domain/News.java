@@ -3,6 +3,8 @@ package com.minsu.dnews.news.domain;
 import com.minsu.dnews.theme.domain.Theme;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.text.StringEscapeUtils;
+import org.jsoup.Jsoup;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

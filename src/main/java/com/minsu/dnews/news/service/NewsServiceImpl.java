@@ -17,6 +17,8 @@ import com.minsu.dnews.theme.infra.ThemeJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -82,9 +84,9 @@ public class NewsServiceImpl implements NewsService {
             List<News> newsList = naverNewsResposne.items().stream()
                     .map(item -> News.builder()
                             .theme(theme)
-                            .title(item.title())
+                            .title(parsingText(item.title()))
                             .originallink(item.originallink())
-                            .description(item.description())
+                            .description(parsingText(item.description()))
                             .pubDate(convertPubDate(item.pubDate()))
                             .build())
                     .toList();
@@ -100,6 +102,10 @@ public class NewsServiceImpl implements NewsService {
         // 예: "Mon, 01 Sep 2025"
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
         return ZonedDateTime.parse(pubDate, formatter).toLocalDateTime();
+    }
+    private String parsingText(String text) {
+        String parsedText = StringEscapeUtils.unescapeHtml4(text);
+        return Jsoup.parse(parsedText).text();
     }
     public void sendMailToSubscribers() {
         Map<String, List<NewsItemDto>> themeNewsMap = updateNews(); // 뉴스 갱신 및 db 저장
