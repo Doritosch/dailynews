@@ -43,8 +43,8 @@ class SubscriberServiceImplTest {
     @DisplayName("구독자 생성")
     void subscribeTest() {
         //given
-        SubscriberRequest subscriberRequest = new SubscriberRequest("test@naver.com", LocalDateTime.now(), new ArrayList<>());
-        Subscriber subscriber = new Subscriber("test@naver.com", subscriberRequest.sendTime());
+        SubscriberRequest subscriberRequest = new SubscriberRequest("test@naver.com", new ArrayList<>());
+        Subscriber subscriber = new Subscriber("test@naver.com");
 
         //when
         when(subscriberJpaRepository.save(any(Subscriber.class)))
@@ -62,7 +62,7 @@ class SubscriberServiceImplTest {
         //given
         SubscriberSearchRequest subscriberSearchRequest =
                 new SubscriberSearchRequest("test01@naver.com");
-        Subscriber subscriber = new Subscriber(subscriberSearchRequest.email(), LocalDateTime.now());
+        Subscriber subscriber = new Subscriber(subscriberSearchRequest.email());
 
         //when
         when(subscriberJpaRepository.findByEmail(subscriberSearchRequest.email()))

@@ -37,7 +37,7 @@ class SubThemeServiceImplTest {
         // given
         List<String> themeList = List.of("주식", "게임", "정치");
 
-        Subscriber subscriber = new Subscriber("test@naver.com", LocalDateTime.now());
+        Subscriber subscriber = new Subscriber("test@naver.com");
 
         // 가짜 Theme 리스트 (DB에서 가져왔다고 가정)
         List<Theme> fakeThemes = themeList.stream()

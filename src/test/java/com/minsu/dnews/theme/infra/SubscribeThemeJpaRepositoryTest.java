@@ -30,7 +30,7 @@ class SubscribeThemeJpaRepositoryTest {
     @Test
     void saveTest() {
         //given
-        Subscriber subscriber = new Subscriber("test@naver.com", LocalDateTime.now());
+        Subscriber subscriber = new Subscriber("test@naver.com");
         List<Theme> themes = new ArrayList<>();
 
         Subscriber savedSubscriber = subscriberJpaRepository.save(subscriber);
