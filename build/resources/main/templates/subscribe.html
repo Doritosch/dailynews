@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dailyNews 구독하기</title>
+<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="header">
+<div class="brand"><a href="/">dailyNews</a></div>
+<a class="button" href="/">소개 페이지</a>
+</div>
+<div class="container">
+<div class="card">
+<h1 class="section-title">구독 설정</h1>
+<div th:if="${error}" class="alert error" th:text="${error}"></div>
+<form th:action="@{/sub}" method="post">
+<div class="field">
+<label>카테고리</label>
+<div class="tags" role="group" aria-label="카테고리 선택">
+<div id="categories-container" aria-live="polite"></div>
+</div>
+<p class="help">여러 개를 선택할 수 있습니다. 내일 오전 7시부터 선택한 카테고리 뉴스가 전송됩니다.</p>
+</div>
+<div class="field">
+<label for="email">이메일</label>
+<input id="email" name="email" type="email" placeholder="you@example.com" required />
+<p class="help">다음날 오전 7시부터 선택한 카테고리의 뉴스를 메일로 받아보게 됩니다.</p>
+</div>
+<div class="actions">
+<button type="submit">구독하기</button>
+<a class="button" th:href="@{/}">돌아가기</a>
+</div>
+<p class="note">구독은 언제든지 해지할 수 있습니다.</p>
+</form>
+</div>
+</div>
+<script>
+(function() {
+  function toSlug(value) {
+    return String(value)
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9가-힣]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function extractThemes(payload) {
+    if (Array.isArray(payload)) return payload;
+    if (payload && Array.isArray(payload.themes)) return payload.themes;
+    for (const key in payload || {}) {
+      if (Array.isArray(payload[key])) return payload[key];
+    }
+    return [];
+  }
+
+  function renderThemes(themes) {
+    const container = document.getElementById('categories-container');
+    container.innerHTML = '';
+    if (!themes.length) {
+      const msg = document.createElement('p');
+      msg.className = 'help';
+      msg.textContent = '가져올 카테고리가 없습니다.';
+      container.appendChild(msg);
+      return;
+    }
+    themes.forEach(function(theme) {
+      const value = String(theme);
+      const slug = toSlug(value);
+      const id = 'cat-' + slug;
+
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.id = id;
+      input.name = 'themeList';
+      input.value = value;
+
+      const label = document.createElement('label');
+      label.className = 'tag';
+      label.htmlFor = id;
+      label.textContent = value;
+
+      container.appendChild(input);
+      container.appendChild(label);
+    });
+  }
+
+  function fetchThemes() {
+    fetch('/themes', { method: 'GET', headers: { 'Accept': 'application/json' } })
+      .then(function(res) { return res.json(); })
+      .then(function(json) { renderThemes(extractThemes(json)); })
+      .catch(function() {
+        const container = document.getElementById('categories-container');
+        const msg = document.createElement('p');
+        msg.className = 'help';
+        msg.textContent = '카테고리를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
+        container.appendChild(msg);
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchThemes);
+  } else {
+    fetchThemes();
+  }
+})();
+</script>
+<script th:inline="javascript">
+(function(){
+  var msg = /*[[${error}]]*/ null;
+  if (msg) { alert(msg); }
+})();
+</script>
+</body>
+</html> 

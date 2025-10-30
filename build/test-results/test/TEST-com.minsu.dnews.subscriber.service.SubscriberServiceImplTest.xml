@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.minsu.dnews.subscriber.service.SubscriberServiceImplTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-10-30T05:37:22.722Z" hostname="minsu.local" time="0.23">
+  <properties/>
+  <testcase name="구독자 생성" classname="com.minsu.dnews.subscriber.service.SubscriberServiceImplTest" time="0.226"/>
+  <testcase name="이메일로 구독자 정보찾기" classname="com.minsu.dnews.subscriber.service.SubscriberServiceImplTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

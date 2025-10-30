@@ -31,6 +31,7 @@ public class News {
     private LocalDateTime pubDate;
 
     @OneToMany(mappedBy = "news")
+    @Builder.Default
     private List<SendLog> sendLogs = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

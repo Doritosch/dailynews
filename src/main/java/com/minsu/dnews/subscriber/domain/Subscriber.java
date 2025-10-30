@@ -28,9 +28,11 @@ public class Subscriber {
     private SubscriberStatus status;
 
     @OneToMany(mappedBy = "subscriber")
+    @Builder.Default
     private List<SubscribeTheme> subscribeThemeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "subscriber")
+    @Builder.Default
     private List<SendLog> sendLogs = new ArrayList<>();
 
     public Subscriber(String email) {

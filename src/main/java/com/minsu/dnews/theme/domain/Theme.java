@@ -26,5 +26,6 @@ public class Theme {
     }
 
     @OneToMany(mappedBy = "theme")
+    @Builder.Default
     private List<News> newsList = new ArrayList<>();
 }
